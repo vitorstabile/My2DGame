@@ -40,35 +40,65 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread.start();
     }
 
+//    @Override
+//    public void run() {
+//
+//        double drawInterval = 1000000000/FPS; //0.016666
+//        double nextDrawTime = System.nanoTime() + drawInterval;
+//
+//        while(gameThread != null) {
+//
+//            // 1 UPDATE: update information such as character positions
+//            update();
+//
+//            // 2 DRAW: draw the screen with the updated information
+//            repaint();
+//
+//            try {
+//                double remainingTime = nextDrawTime - System.nanoTime();
+//                remainingTime = remainingTime/1000000;
+//
+//                if(remainingTime < 0){
+//                    remainingTime=0;
+//                }
+//
+//                Thread.sleep((long) remainingTime);
+//
+//                nextDrawTime += drawInterval;
+//
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//
+//        }
+//
+//    }
+
     @Override
     public void run() {
-
         double drawInterval = 1000000000/FPS; //0.016666
-        double nextDrawTime = System.nanoTime() + drawInterval;
+        double delta = 0;
+        long lastTime = System.nanoTime();
+        long currentTime;
 
         while(gameThread != null) {
 
-            // 1 UPDATE: update information such as character positions
-            update();
+            currentTime = System.nanoTime();
 
-            // 2 DRAW: draw the screen with the updated information
-            repaint();
+            delta += (currentTime - lastTime) / drawInterval;
 
-            try {
-                double remainingTime = nextDrawTime - System.nanoTime();
-                remainingTime = remainingTime/1000000;
+            lastTime = currentTime;
 
-                if(remainingTime < 0){
-                    remainingTime=0;
-                }
+            if(delta >= 1) {
+                // 1 UPDATE: update information such as character positions
+                update();
+                // 2 DRAW: draw the screen with the updated information
+                repaint();
 
-                Thread.sleep((long) remainingTime);
-
-                nextDrawTime += drawInterval;
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                delta--;
             }
+
+
 
         }
 
